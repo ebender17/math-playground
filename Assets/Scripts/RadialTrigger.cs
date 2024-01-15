@@ -30,5 +30,4 @@ public class RadialTrigger : MonoBehaviour
         Gizmos.DrawSphere(center, radius);
     }
 #endif
-
 }
