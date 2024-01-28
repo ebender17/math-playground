@@ -8,11 +8,11 @@ public class TurretPlacer : MonoBehaviour
     [SerializeField]
     private Transform turret;
 
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (turret == null)
-            return;
+        if (!turret) { return; }
 
         Ray ray = new Ray(transform.position, transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit))

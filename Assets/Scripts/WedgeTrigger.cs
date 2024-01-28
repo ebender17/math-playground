@@ -15,9 +15,12 @@ public class WedgeTrigger : MonoBehaviour
     [Range(0, 1)]
     private float angularThreshhold = 0.5f;
 
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
+        if (!target) { return; }
+
         Gizmos.matrix = Handles.matrix = transform.localToWorldMatrix;
         Gizmos.color = Handles.color = CheckInsideTrigger(target.position) ? Color.white : Color.red;
 
@@ -42,7 +45,7 @@ public class WedgeTrigger : MonoBehaviour
     }
 #endif
 
-    private bool CheckInsideTrigger(Vector3 position)
+    public bool CheckInsideTrigger(Vector3 position)
     {
         Vector3 vecToTargetWorld = (position - transform.position);
         Vector3 vecToTargetLocal = transform.InverseTransformVector(vecToTargetWorld);
