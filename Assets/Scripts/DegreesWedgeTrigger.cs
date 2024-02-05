@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class WedgeTrigger : MonoBehaviour
+
+public class DegreesWedgeTrigger : MonoBehaviour
 {
     [SerializeField]
     private Transform target = null;
@@ -12,14 +13,11 @@ public class WedgeTrigger : MonoBehaviour
     [SerializeField]
     private float height = 1;
     [SerializeField]
-    // [Range(0, 1)]
-    // private float angularThreshhold = 0.5f;
     [Range(0, 180)]
-    private float fovDegrees = 45; // This is not a fast as 'WedgeTrigger' script but provides the same functionality and can set fov in degrees
+    private float fovDegrees = 45;
 
 
-    float fovRadians => fovDegrees * Mathf.Deg2Rad;
-    float AngularThreshold => Mathf.Cos(fovRadians / 2);
+    float AngularThreshold => Mathf.Cos(fovDegrees * Mathf.Deg2Rad / 2);
 
 
 #if UNITY_EDITOR
@@ -32,16 +30,13 @@ public class WedgeTrigger : MonoBehaviour
 
         Vector3 top = new Vector3(0, height, 0);
 
-        // Handles.DrawWireDisc(Vector3.zero, Vector3.up, radius);
-        // Handles.DrawWireDisc(top, Vector3.up, radius);
+        Handles.DrawWireDisc(Vector3.zero, Vector3.up, radius);
+        Handles.DrawWireDisc(top, Vector3.up, radius);
 
-        float x = Mathf.Sqrt(1 - (AngularThreshold * AngularThreshold));
+        float x = Mathf.Sqrt(1 - (AngularThreshold * fovDegrees));
 
-        Vector3 vLeft = new Vector3(-x, 0, AngularThreshold) * radius;
-        Vector3 vRight = new Vector3(x, 0, AngularThreshold) * radius;
-
-        Handles.DrawWireArc(Vector3.zero, Vector3.up, vLeft, fovDegrees, radius);
-        Handles.DrawWireArc(top, Vector3.up, vLeft, fovDegrees, radius);
+        Vector3 vLeft = new Vector3(-x, 0, fovDegrees) * radius;
+        Vector3 vRight = new Vector3(x, 0, fovDegrees) * radius;
 
         Gizmos.DrawRay(Vector3.zero, vLeft);
         Gizmos.DrawRay(Vector3.zero, vRight);
