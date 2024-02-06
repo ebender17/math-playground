@@ -8,7 +8,9 @@ public class WedgeTrigger : MonoBehaviour
     [SerializeField]
     private Transform target = null;
     [SerializeField]
-    private float radius = 1;
+    private float radiusOuter = 1;
+    [SerializeField]
+    private float radiusInner = 0.3f;
     [SerializeField]
     private float height = 1;
     [SerializeField]
@@ -37,20 +39,27 @@ public class WedgeTrigger : MonoBehaviour
 
         float x = Mathf.Sqrt(1 - (AngularThreshold * AngularThreshold));
 
-        Vector3 vLeft = new Vector3(-x, 0, AngularThreshold) * radius;
-        Vector3 vRight = new Vector3(x, 0, AngularThreshold) * radius;
+        Vector3 vLeftDir = new Vector3(-x, 0, AngularThreshold);
+        Vector3 vRightDir = new Vector3(x, 0, AngularThreshold);
+        Vector3 vLeftOuter = vLeftDir * radiusOuter;
+        Vector3 vRightOuter = vRightDir * radiusOuter;
+        Vector3 vLeftInner = vLeftDir * radiusInner;
+        Vector3 vRightInner = vRightDir * radiusInner;
 
-        Handles.DrawWireArc(Vector3.zero, Vector3.up, vLeft, fovDegrees, radius);
-        Handles.DrawWireArc(top, Vector3.up, vLeft, fovDegrees, radius);
+        Handles.DrawWireArc(Vector3.zero, Vector3.up, vLeftOuter, fovDegrees, radiusOuter);
+        Handles.DrawWireArc(top, Vector3.up, vLeftOuter, fovDegrees, radiusOuter);
+        Handles.DrawWireArc(Vector3.zero, Vector3.up, vLeftInner, fovDegrees, radiusInner);
+        Handles.DrawWireArc(top, Vector3.up, vLeftInner, fovDegrees, radiusInner);
 
-        Gizmos.DrawRay(Vector3.zero, vLeft);
-        Gizmos.DrawRay(Vector3.zero, vRight);
-        Gizmos.DrawRay(top, vLeft);
-        Gizmos.DrawRay(top, vRight);
+        Gizmos.DrawLine(vLeftInner, vLeftOuter);
+        Gizmos.DrawLine(vRightInner, vRightOuter);
+        Gizmos.DrawLine(top + vLeftInner, top + vLeftOuter);
+        Gizmos.DrawLine(top + vRightInner, top + vRightOuter);
 
-        Gizmos.DrawLine(Vector3.zero, top);
-        Gizmos.DrawLine(vLeft, top + vLeft);
-        Gizmos.DrawLine(vRight, top + vRight);
+        Gizmos.DrawLine(vLeftInner, top + vLeftInner);
+        Gizmos.DrawLine(vRightInner, top + vRightInner);
+        Gizmos.DrawLine(vLeftOuter, top + vLeftOuter);
+        Gizmos.DrawLine(vRightOuter, top + vRightOuter);
     }
 #endif
 
@@ -72,7 +81,7 @@ public class WedgeTrigger : MonoBehaviour
             return false;
 
         // Cylindrical radius
-        if (flatDistanceToTarget > radius)
+        if (flatDistanceToTarget > radiusOuter || flatDistanceToTarget < radiusInner)
             return false;
 
         return true;
